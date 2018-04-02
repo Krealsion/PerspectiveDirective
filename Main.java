@@ -7,8 +7,18 @@ import java.util.TimerTask;
 import javax.swing.JFrame;
 
 public class Main {
+	
+	public static void main(String[] args){
+	//private void dummy(){
+		Engine en = new Engine(new Camera());
+		en.c.SetPosition(new Vector3(-20, 0, 0));
+		for (long i = 0; i < 20000000000l; i++){
+			en.Conv(new Vector3(i,i,i));
+		}
+	}
 
-	public static void main(String[] args) {
+	//public static void main(String[] args) {
+	private void dummy(){
 		ArrayList<Point3D> HeadPoints = new ArrayList<>();
 		Point3D a = new Point3D(new Vector3(10,10,10), new ArrayList<>());
 		Point3D b = new Point3D(new Vector3(10,0,10), new ArrayList<Point3D>(){{add(a);}});
@@ -28,9 +38,6 @@ public class Main {
 		fr.pack();
 		fr.setVisible(true);
 		fr.setDefaultCloseOperation(3);
-//		for (long i = 0; i < 200000000l; i++){
-//			en.Conv(new Vector3(i,i,i));
-//		}
 		Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

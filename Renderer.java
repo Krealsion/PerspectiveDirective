@@ -23,7 +23,7 @@ public class Renderer extends JPanel {
 	public void paintComponent(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, 800, 800);
-		//DrawVertexField(g);
+		DrawVertexField(g);
 		DrawLatticeGrid(g);
 		g.setColor(Color.RED);
 		ArrayList<Line> l = e.Conv(e.Conv(HeadPoints.get(0).Position), HeadPoints.get(0).Linked);

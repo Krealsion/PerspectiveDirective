@@ -22,7 +22,6 @@ public class Engine {
 		return t;
 	}
 
-
 	public Vector2 Conv(Vector3 P) {
 		Vector3 CamPos = c.GetPos();
 		Vector3 OriginP = new Vector3(P.GetX() - CamPos.GetX(), P.GetY() - CamPos.GetY(), P.GetZ() - CamPos.GetZ());
@@ -36,19 +35,19 @@ public class Engine {
 	}
 
 	public Vector3 RotatePointXY(Vector3 P, double Angle) {
-		double si = Math.sin(Angle);
-		double co = Math.cos(Angle);
+		double si = jMath.FastSin(Angle);
+		double co = jMath.FastCos(Angle);
 		return new Vector3(P.GetX() * co - P.GetY() * si, P.GetY() * co + P.GetX() * si, P.GetZ());
 	}
 
 	public Vector3 RotatePointXZ(Vector3 P, double Angle) {
-		double si = Math.sin(Angle);
-		double co = Math.cos(Angle);
+		double si = jMath.FastSin(Angle);
+		double co = jMath.FastCos(Angle);
 		return new Vector3(P.GetX() * co - P.GetZ() * si, P.GetY(), P.GetZ() * co + P.GetX() * si);
 	}
 	public Vector3 RotatePointYZ(Vector3 P, double Angle) {
-		double si = Math.sin(Angle);
-		double co = Math.cos(Angle);
+		double si = jMath.FastSin(Angle);
+		double co = jMath.FastCos(Angle);
 		return new Vector3(P.GetX(), P.GetY() * co - P.GetZ() * si, P.GetZ() * co + P.GetY() * si);
 	}
 }
