@@ -71,42 +71,42 @@ public class Main {
 					en.c.SetPosition(new Vector3(en.c.GetPos().GetX(),en.c.GetPos().GetY(),en.c.GetPos().GetZ()-1));
 					fr.repaint();
 				}
-				if (Input.IsKeyDown(KeyEvent.VK_E)){
+				if (Input.IsKeyDown(KeyEvent.VK_Q)){
 					en.c.SetYaw(en.c.GetYaw() + .04);
 					if (en.c.GetYaw() < -jMath.PI){
 						en.c.SetYaw(en.c.GetYaw() + jMath.PIt2);
 					}
 					fr.repaint();
 				}
-				if (Input.IsKeyDown(KeyEvent.VK_Q)){
+				if (Input.IsKeyDown(KeyEvent.VK_E)){
 					en.c.SetYaw(en.c.GetYaw() - .04);
 					if (en.c.GetYaw() > jMath.PI){
 						en.c.SetYaw(en.c.GetYaw() - jMath.PIt2);
 					}
 					fr.repaint();
 				}
-				if (Input.IsKeyDown(KeyEvent.VK_F)){
+				if (Input.IsKeyDown(KeyEvent.VK_R)){
 					en.c.SetPitch(en.c.GetPitch() - .04);
 					if (en.c.GetPitch() < -jMath.PI){
 						en.c.SetPitch(en.c.GetPitch() + jMath.PIt2);
 					}
 					fr.repaint();
 				}
-				if (Input.IsKeyDown(KeyEvent.VK_R)){
+				if (Input.IsKeyDown(KeyEvent.VK_F)){
 					en.c.SetPitch(en.c.GetPitch() + .04);
 					if (en.c.GetPitch() > jMath.PI){
 						en.c.SetPitch(en.c.GetPitch() - jMath.PIt2);
 					}
 					fr.repaint();
 				}
-				if (Input.IsKeyDown(KeyEvent.VK_Z)){
+				if (Input.IsKeyDown(KeyEvent.VK_X)){
 					en.c.SetRoll(en.c.GetRoll() - .04);
 					if (en.c.GetRoll() < -jMath.PI){
 						en.c.SetRoll(en.c.GetRoll() + jMath.PIt2);
 					}
 					fr.repaint();
 				}
-				if (Input.IsKeyDown(KeyEvent.VK_X)){
+				if (Input.IsKeyDown(KeyEvent.VK_Z)){
 					en.c.SetRoll(en.c.GetRoll() + .04);
 					if (en.c.GetRoll() > jMath.PI){
 						en.c.SetRoll(en.c.GetRoll() - jMath.PIt2);
