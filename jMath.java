@@ -9,26 +9,20 @@ public class jMath {
 	public static double[] CosineLookup;
 
 	static {
-		GenerateSineLookupTable(1000000);
-		GenerateCosineLookupTable(1000000);
+		GenerateTrigLookupTables(100000);
 	}
 
-	public static void GenerateSineLookupTable(int Size) {
+	public static void GenerateTrigLookupTables(int Size) {
 		SineLookup = new double[Size];
+		CosineLookup = new double[Size];
 		for (int i = 0; i < Size; i++) {
 			SineLookup[i] = Math.sin(PI * (((double) i / ((double) Size / 2d)) - 1d));
+			CosineLookup[i] = Math.cos(PI * (((double) i / ((double) Size / 2d)) - 1d));
 		}
 	}
 
 	public static double FastSin(double Angle) {
 		return SineLookup[(int) (((Angle / PI) + 1d) * (double) SineLookup.length / 2 - 1)];
-	}
-
-	public static void GenerateCosineLookupTable(int Size) {
-		CosineLookup = new double[Size];
-		for (int i = 0; i < Size; i++) {
-			CosineLookup[i] = Math.cos(PI * (((double) i / ((double) Size / 2d)) - 1d));
-		}
 	}
 
 	public static double FastCos(double Angle) {
