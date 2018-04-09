@@ -12,6 +12,7 @@ public class Renderer extends JPanel {
 	ArrayList<Point3D> HeadPoints;
 	double LatticeSize = 1;
 	double LatticeRange = 10;
+	int VertexFieldSize = 100;
 
 	Renderer(Engine e, ArrayList<Point3D> HeadPoints) {
 		this.e = e;
@@ -29,16 +30,26 @@ public class Renderer extends JPanel {
 		ArrayList<Line> l = e.Conv(e.Conv(HeadPoints.get(0).Position), HeadPoints.get(0).Linked);
 		for (int i = 0; i < l.size(); i++) {
 			g.drawLine((int) l.get(i).GetPoint1().GetX(), (int) l.get(i).GetPoint1().GetY(), (int) l.get(i).GetPoint2().GetX(), (int) l.get(i).GetPoint2().GetY());
+			DrawPoint(g, l.get(i).GetPoint1());
+			DrawPoint(g, l.get(i).GetPoint2());
 		}
-		DrawCompass(g);
+		//DrawCompass(g);
+	}
+
+	private void DrawPoint(Graphics g, Vector2 P) {
+		Color Original = g.getColor();
+		g.setColor(Color.WHITE);
+		g.fillOval((int) P.GetX() - 3, (int) P.GetY() - 3, 7, 7);
+		g.setColor(Original);
+		
 	}
 
 	private void DrawVertexField(Graphics g) {
 		Color prev = g.getColor();
 		g.setColor(Color.LIGHT_GRAY);
-		for (int x = 0; x < 75; x++) {		//TODO UNDERSTAND WHY THIS REVEALS THE TRUE NATURE OF THE UNIVERSE
-			for (int y = 0; y < 75; y++) {
-				for (int z = 0; z < 75; z++) {
+		for (int x = 0; x < VertexFieldSize; x++) {
+			for (int y = 0; y < VertexFieldSize; y++) {
+				for (int z = 0; z < VertexFieldSize; z++) {
 					Vector2 v = e.Conv(new Vector3(x, y, z));
 					g.fillRect((int) v.GetX(), (int) v.GetY(), 1, 1);
 				}
@@ -52,7 +63,7 @@ public class Renderer extends JPanel {
 		g.setColor(Color.LIGHT_GRAY);
 		for (double x = -LatticeRange; x <= LatticeRange; x += LatticeSize) {
 			for (double y = -LatticeRange; y <= LatticeRange; y += LatticeSize) {
-				Vector2 v = e.Conv(new Vector3(x, y, 0));		//TODO set this to 0 z
+				Vector2 v = e.Conv(new Vector3(x, y, 0));
 				Vector2 v1 = e.Conv(new Vector3(x + LatticeSize, y, 0));
 				Vector2 v2 = e.Conv(new Vector3(x - LatticeSize, y, 0));
 				Vector2 v3 = e.Conv(new Vector3(x, y + LatticeSize, 0));
