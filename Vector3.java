@@ -33,4 +33,22 @@ public class Vector3{
 	public void SetZ(double z){
 		this.z = z;
 	}
+	public void ModX(double x){
+		this.x += x;
+	}
+	public void ModY(double y){
+		this.y += y;
+	}
+	public void ModZ(double z){
+		this.z += z;
+	}
+	public void Add(Vector3 P){
+		this.x += P.x;
+		this.y += P.y;
+		this.z += P.z;
+	}
+	@Override
+	public String toString(){
+		return new StringBuilder().append("(").append(GetX()).append(", ").append(GetY()).append(", ").append(GetZ()).append(")").toString();
+	}
 }
