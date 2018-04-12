@@ -34,20 +34,25 @@ public class Engine {
 		return new Vector2(Perc1 * ScreenSize, Perc2 * ScreenSize);
 	}
 
-	public Vector3 RotatePointXY(Vector3 P, double Angle) {
-		double si = jMath.FastSin(Angle);
-		double co = jMath.FastCos(Angle);
+	public Vector3 RotateAll(Vector3 P, double Pitch, double Yaw, double Roll) {
+		return RotatePointXY(RotatePointXZ(RotatePointYZ(P, Roll), Pitch), Yaw);
+	}
+
+	public Vector3 RotatePointXY(Vector3 P, double Yaw) {
+		double si = jMath.FastSin(Yaw);
+		double co = jMath.FastCos(Yaw);
 		return new Vector3(P.GetX() * co - P.GetY() * si, P.GetY() * co + P.GetX() * si, P.GetZ());
 	}
 
-	public Vector3 RotatePointXZ(Vector3 P, double Angle) {
-		double si = jMath.FastSin(Angle);
-		double co = jMath.FastCos(Angle);
+	public Vector3 RotatePointXZ(Vector3 P, double Pitch) {
+		double si = jMath.FastSin(Pitch);
+		double co = jMath.FastCos(Pitch);
 		return new Vector3(P.GetX() * co - P.GetZ() * si, P.GetY(), P.GetZ() * co + P.GetX() * si);
 	}
-	public Vector3 RotatePointYZ(Vector3 P, double Angle) {
-		double si = jMath.FastSin(Angle);
-		double co = jMath.FastCos(Angle);
+
+	public Vector3 RotatePointYZ(Vector3 P, double Roll) {
+		double si = jMath.FastSin(Roll);
+		double co = jMath.FastCos(Roll);
 		return new Vector3(P.GetX(), P.GetY() * co - P.GetZ() * si, P.GetZ() * co + P.GetY() * si);
 	}
 }
