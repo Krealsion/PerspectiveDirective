@@ -3,45 +3,148 @@ package pkg3dengine;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.PixelGrabber;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class Renderer extends JPanel {
 
 	Engine e;
 	ArrayList<Point3D> HeadPoints;
-	double LatticeSize = 1;
-	double LatticeRange = 10;
-	int VertexFieldSize = 100;
+	public static double LatticeSize = 1;
+	public static double LatticeRange = 10;
+	public static int VertexFieldSize = 100;
+
+	public static int WINDOWHEIGHT = 800;
+	public static int WINDOWWIDTH = 800;
+
+	private static int CROSSHAIRTHICKNESS = 2;
+	private static int CROSSHAIRLENGTH = 30;
+
+	public Color[][] Disco = new Color[10][10];
+	public Map<String, Color[][]> Textures;
 
 	Renderer(Engine e, ArrayList<Point3D> HeadPoints) {
 		this.e = e;
 		this.HeadPoints = HeadPoints;
-		this.setPreferredSize(new Dimension(800, 800));
+		this.setPreferredSize(new Dimension(WINDOWHEIGHT, WINDOWWIDTH));
+		Textures = new HashMap<>();
+		Image img = null;
+		try {
+			img = ImageIO.read(new File("src/pkg3dengine/Images/RingRune.jpg"));
+		} catch (IOException ex) {
+			Logger.getLogger(Renderer.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		int w = img.getWidth(null);
+		int h = img.getHeight(null);
+		int[] pixels = new int[w * h];
+		PixelGrabber pg = new PixelGrabber(img, 0, 0, w, h, pixels, 0, w);
+		try {
+			pg.grabPixels();
+		} catch (InterruptedException ex) {
+			Logger.getLogger(Renderer.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		Color[][] c = new Color[h][w];
+		for (int i = 0; i < pixels.length; i++) {
+			Color temp = new Color(pixels[i]);
+			c[(int) (i / w)][i % w] = temp;
+		}
+		Textures.put("src/pkg3dengine/Images/RingRune.jpg", c);
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
+		long start = System.currentTimeMillis();
 		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, 800, 800);
-		DrawVertexField(g);
+		g.fillRect(0, 0, WINDOWHEIGHT, WINDOWWIDTH);
+		//DrawVertexField(g);
 		DrawLatticeGrid(g);
-		g.setColor(Color.RED);
 		ArrayList<Line> l = e.Conv(e.Conv(HeadPoints.get(0).Position), HeadPoints.get(0).Linked);
 		for (int i = 0; i < l.size(); i++) {
-			g.drawLine((int) l.get(i).GetPoint1().GetX(), (int) l.get(i).GetPoint1().GetY(), (int) l.get(i).GetPoint2().GetX(), (int) l.get(i).GetPoint2().GetY());
+			DrawLine(g, l.get(i));
 			DrawPoint(g, l.get(i).GetPoint1());
 			DrawPoint(g, l.get(i).GetPoint2());
 		}
-		//DrawCompass(g);
+
+		ArrayList<Vector2> t = new ArrayList<>();
+		t.add(e.Conv(new Vector3(0, 0, 10)));
+		t.add(e.Conv(new Vector3(0, 10, 10)));
+		t.add(e.Conv(new Vector3(0, 10, 0)));
+		t.add(e.Conv(new Vector3(0, 0, 0)));
+
+		ArrayList<Vector2> t2 = new ArrayList<>();
+		t2.add(e.Conv(new Vector3(10, 0, 10)));
+		t2.add(e.Conv(new Vector3(10, 10, 10)));
+		t2.add(e.Conv(new Vector3(0, 10, 10)));
+		t2.add(e.Conv(new Vector3(0, 0, 10)));
+		Vector3 avg1 = new Vector3(0, 5, 5);
+		Vector3 avg2 = new Vector3(5, 5, 10);
+		for (int i = 0; i < t.size(); i++) {
+			DrawPoint(g, t.get(i));
+		}
+
+		if (DistanceBetween(avg1, e.c.GetPos()) > DistanceBetween(avg2, e.c.GetPos())) {
+			GraphicsFunctions.DrawTexture(t, Textures.get("src/pkg3dengine/Images/RingRune.jpg"), g);
+			GraphicsFunctions.DrawTexture(t2, Disco, g);
+		} else {
+			GraphicsFunctions.DrawTexture(t2, Disco, g);
+			GraphicsFunctions.DrawTexture(t, Textures.get("src/pkg3dengine/Images/RingRune.jpg"), g);
+		}
+		DrawCompass(g);
+		DrawCrosshair(g);
+		long end = System.currentTimeMillis();
+		g.setColor(Color.red);
+		g.drawString("" + (end - start), 10, 20);
+		g.drawString("" + 1000/((double)end - (double)start), 10, 40);
 	}
 
-	private void DrawPoint(Graphics g, Vector2 P) {
+	public double DistanceBetween(Vector3 v1, Vector3 v2) {
+		return Math.sqrt(Math.pow(v1.GetX() - e.c.GetPos().GetX(), 2) + Math.pow(v1.GetY() - e.c.GetPos().GetY(), 2) + Math.pow(v1.GetZ() - e.c.GetPos().GetZ(), 2));
+	}
+
+	public static void DrawLine(Graphics g, Line l) {
+		Color Original = g.getColor();
+		g.setColor(Color.RED);
+		g.drawLine((int) l.GetPoint1().GetX(), (int) l.GetPoint1().GetY(), (int) l.GetPoint2().GetX(), (int) l.GetPoint2().GetY());
+		g.setColor(Original);
+	}
+
+	private void DrawCrosshair(Graphics g) {
+		Color Original = g.getColor();
+		g.setColor(Color.WHITE);
+		for (int i = 0; i < CROSSHAIRTHICKNESS; i++) {
+			g.drawLine(WINDOWWIDTH / 2 - CROSSHAIRTHICKNESS / 2 + i,
+					WINDOWHEIGHT / 2 - CROSSHAIRLENGTH / 2,
+					WINDOWWIDTH / 2 - CROSSHAIRTHICKNESS / 2 + i,
+					WINDOWHEIGHT / 2 - CROSSHAIRLENGTH / 2 + CROSSHAIRLENGTH);
+			g.drawLine(WINDOWWIDTH / 2 - CROSSHAIRLENGTH / 2,
+					WINDOWHEIGHT / 2 - CROSSHAIRTHICKNESS / 2 + i,
+					WINDOWWIDTH / 2 - CROSSHAIRLENGTH / 2 + CROSSHAIRLENGTH,
+					WINDOWHEIGHT / 2 - CROSSHAIRTHICKNESS / 2 + i);
+		}
+		g.setColor(Original);
+	}
+
+	public static void DrawPoint(Graphics g, Vector2 P) {
 		Color Original = g.getColor();
 		g.setColor(Color.WHITE);
 		g.fillOval((int) P.GetX() - 3, (int) P.GetY() - 3, 7, 7);
 		g.setColor(Original);
-		
+	}
+
+	public static void DrawPoint(Graphics g, Vector2 P, Color c) {
+		Color Original = g.getColor();
+		g.setColor(c);
+		g.fillOval((int) P.GetX() - 3, (int) P.GetY() - 3, 7, 7);
+		g.setColor(Original);
 	}
 
 	private void DrawVertexField(Graphics g) {
@@ -85,11 +188,11 @@ public class Renderer extends JPanel {
 		Vector2 vRight = e.Conv(new Vector3(2, 0, 0));
 		Vector2 vForward = e.Conv(new Vector3(0, 2, 0));
 		Vector2 vBackward = e.Conv(new Vector3(0, -2, 0));
-		g.setColor(Color.MAGENTA);//CHANGE IN Z
+		g.setColor(Color.MAGENTA);
 		DrawThickLine(g, vUP, vDown);
-		g.setColor(Color.CYAN);//CHANGE IN X
+		g.setColor(Color.CYAN);
 		DrawThickLine(g, vLeft, vRight);
-		g.setColor(Color.YELLOW);//CHANGE IN Y
+		g.setColor(Color.YELLOW);
 		DrawThickLine(g, vForward, vBackward);
 		g.setColor(Color.GREEN);
 		g.fillRect((int) vUP.GetX() - 3, (int) vUP.GetY() - 3, 7, 7);
@@ -98,7 +201,6 @@ public class Renderer extends JPanel {
 		g.setColor(Color.BLUE);
 		g.fillRect((int) vForward.GetX() - 3, (int) vForward.GetY() - 3, 7, 7);
 		g.setColor(prev);
-
 	}
 
 	private void DrawThickLine(Graphics g, Vector2 P1, Vector2 P2) {
