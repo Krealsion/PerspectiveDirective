@@ -1,5 +1,6 @@
 package pkg3dengine;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -11,11 +12,15 @@ public class Main {
 	static Double Speed = 1d;
 
 	public static void main2(String[] args) {
+		long NumOfPoints = 10000000000l;
 		Engine en = new Engine(new Camera());
-		en.c.SetPosition(new Vector3(-20, 0, 0));
-		for (long i = 0; i < 20000000000l; i++) {
+		en.c.SetPosition(new Vector3(-20, 0, 5));
+		long Start = System.currentTimeMillis();
+		for (long i = 0; i < NumOfPoints; i++) {
 			en.Conv(new Vector3(i * i, i, i / 10));
 		}
+		System.out.println("Time for " + NumOfPoints + " points took " + (System.currentTimeMillis() - Start) + " to run. "
+				+ (NumOfPoints / (System.currentTimeMillis() - Start)) + " points per ms");
 	}
 
 	public static void main(String[] args) {
@@ -31,7 +36,7 @@ public class Main {
 		HeadPoints.add(h);
 
 		Engine en = new Engine(new Camera());
-		en.c.SetPosition(new Vector3(-10, 0, 0));
+		en.c.SetPosition(new Vector3(-20, 0, 5));
 		Renderer r = new Renderer(en, HeadPoints);
 		JFrame fr = new JFrame("DirectivePerspecitve");
 		fr.setContentPane(r);
@@ -40,30 +45,41 @@ public class Main {
 		fr.setDefaultCloseOperation(3);
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
+			int t;
 			@Override
 			public void run() {
+					fr.repaint();
+				t++;
+				if (t % 25 == 0) {
+					t = 0;
+					for (int i = 0; i < 10; i++) {
+						for (int j = 0; j < 10; j++) {
+							r.Disco[i][j] = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
+						}
+					}
+				}
 				if (Input.IsKeyDown(KeyEvent.VK_W)) {
-					en.c.GetPos().Add(en.RotateAll(new Vector3(1,0,0), -en.c.GetPitch(), -en.c.GetYaw(), -en.c.GetRoll()));
+					en.c.GetPos().Add(en.RotateAllReverse(new Vector3(Speed, 0, 0), -en.c.GetPitch(), -en.c.GetYaw(), -en.c.GetRoll()));
 					fr.repaint();
 				}
 				if (Input.IsKeyDown(KeyEvent.VK_S)) {
-					en.c.GetPos().Add(en.RotateAll(new Vector3(-1,0,0), -en.c.GetPitch(), -en.c.GetYaw(), -en.c.GetRoll()));
+					en.c.GetPos().Add(en.RotateAllReverse(new Vector3(-Speed, 0, 0), -en.c.GetPitch(), -en.c.GetYaw(), -en.c.GetRoll()));
 					fr.repaint();
 				}
 				if (Input.IsKeyDown(KeyEvent.VK_D)) {
-					en.c.GetPos().Add(en.RotateAll(new Vector3(0,1,0), -en.c.GetPitch(), -en.c.GetYaw(), -en.c.GetRoll()));
+					en.c.GetPos().Add(en.RotateAllReverse(new Vector3(0, Speed, 0), -en.c.GetPitch(), -en.c.GetYaw(), -en.c.GetRoll()));
 					fr.repaint();
 				}
 				if (Input.IsKeyDown(KeyEvent.VK_A)) {
-					en.c.GetPos().Add(en.RotateAll(new Vector3(0,-1,0), -en.c.GetPitch(), -en.c.GetYaw(), -en.c.GetRoll()));
+					en.c.GetPos().Add(en.RotateAllReverse(new Vector3(0, -Speed, 0), -en.c.GetPitch(), -en.c.GetYaw(), -en.c.GetRoll()));
 					fr.repaint();
 				}
 				if (Input.IsKeyDown(KeyEvent.VK_SPACE)) {
-					en.c.GetPos().Add(en.RotateAll(new Vector3(0,0,1), -en.c.GetPitch(), -en.c.GetYaw(), -en.c.GetRoll()));
+					en.c.GetPos().Add(en.RotateAllReverse(new Vector3(0, 0, Speed), -en.c.GetPitch(), -en.c.GetYaw(), -en.c.GetRoll()));
 					fr.repaint();
 				}
 				if (Input.IsKeyDown(KeyEvent.VK_SHIFT)) {
-					en.c.GetPos().Add(en.RotateAll(new Vector3(0,0,-1), -en.c.GetPitch(), -en.c.GetYaw(), -en.c.GetRoll()));
+					en.c.GetPos().Add(en.RotateAllReverse(new Vector3(0, 0, -Speed), -en.c.GetPitch(), -en.c.GetYaw(), -en.c.GetRoll()));
 					fr.repaint();
 				}
 				if (Input.IsKeyDown(KeyEvent.VK_Q)) {
@@ -114,15 +130,6 @@ public class Main {
 				if (Input.IsKeyPressed(KeyEvent.VK_SUBTRACT)) {
 					Speed -= .1;
 				}
-				if (Input.IsKeyPressed(KeyEvent.VK_V)) {
-					en.v = !en.v;
-					fr.repaint();
-				}
-//				en.c.SetPitch(-jMath.getRadiansPointsTo(new Vector2(en.c.GetPos().GetX(), en.c.GetPos().GetZ()), new Vector2()));
-//				en.c.SetYaw(-jMath.getRadiansPointsTo(new Vector2(en.c.GetPos().GetX(), en.c.GetPos().GetY()), new Vector2()));
-//				System.out.println(-jMath.getRadiansPointsTo(new Vector2(en.c.GetPos().GetX(), en.c.GetPos().GetZ()), new Vector2()));
-//				System.out.println(-jMath.getRadiansPointsTo(new Vector2(en.c.GetPos().GetX(), en.c.GetPos().GetY()), new Vector2()));
-				System.out.println(en.c.GetPos());
 			}
 		}, 0, 16);
 	}

@@ -25,31 +25,36 @@ public class Engine {
 	public Vector2 Conv(Vector3 P) {
 		Vector3 CamPos = c.GetPos();
 		Vector3 OriginP = new Vector3(P.GetX() - CamPos.GetX(), P.GetY() - CamPos.GetY(), P.GetZ() - CamPos.GetZ());
-		OriginP = RotatePointXY(OriginP, c.GetYaw());
-		OriginP = RotatePointXZ(OriginP, c.GetPitch());
-		OriginP = RotatePointYZ(OriginP, c.GetRoll());
-		double WidthAtX = c.GetTanHalfFOV() * OriginP.GetX();
-		double Perc1 = .5 + (OriginP.GetY() / WidthAtX);
-		double Perc2 = .5 - (OriginP.GetZ() / WidthAtX);
-		return new Vector2(Perc1 * ScreenSize, Perc2 * ScreenSize);
+		OriginP = RotateAll(OriginP, c.GetPitch(), c.GetYaw(), c.GetRoll());
+		double WidthAtX = Math.abs(c.GetTanHalfFOV() * OriginP.GetX());
+		if (OriginP.GetX() <= 0) {
+				WidthAtX = .00001;
+		}
+		double PercX = .5 + (OriginP.GetY() / WidthAtX);
+		double PercY = .5 - (OriginP.GetZ() / WidthAtX);
+		return new Vector2(PercX * ScreenSize, PercY * ScreenSize);
 	}
-
-	public Vector3 RotateAll(Vector3 P, double Pitch, double Yaw, double Roll) {
+	
+	public Vector3 RotateAll(Vector3 P, double Pitch, double Yaw, double Roll){
+		return RotatePointYZ(RotatePointXZ(RotatePointXY(P, Yaw), Pitch), Roll);
+	}
+	
+	public Vector3 RotateAllReverse(Vector3 P, double Pitch, double Yaw, double Roll){
 		return RotatePointXY(RotatePointXZ(RotatePointYZ(P, Roll), Pitch), Yaw);
 	}
-
+	
 	public Vector3 RotatePointXY(Vector3 P, double Yaw) {
 		double si = jMath.FastSin(Yaw);
 		double co = jMath.FastCos(Yaw);
 		return new Vector3(P.GetX() * co - P.GetY() * si, P.GetY() * co + P.GetX() * si, P.GetZ());
 	}
-
+	
 	public Vector3 RotatePointXZ(Vector3 P, double Pitch) {
 		double si = jMath.FastSin(Pitch);
 		double co = jMath.FastCos(Pitch);
 		return new Vector3(P.GetX() * co - P.GetZ() * si, P.GetY(), P.GetZ() * co + P.GetX() * si);
 	}
-
+	
 	public Vector3 RotatePointYZ(Vector3 P, double Roll) {
 		double si = jMath.FastSin(Roll);
 		double co = jMath.FastCos(Roll);
