@@ -15,7 +15,7 @@ public class Camera {
 		Yaw = 0;
 		Roll = 0;
 		FOV = Math.PI * 2 / 3;
-		TanHalfFOV = Math.tan(FOV/2);
+		TanHalfFOV = Math.tan(FOV / 2);
 	}
 
 	public Camera(Vector3 Pos, double Pitch, double Yaw, double Roll) {
@@ -28,7 +28,7 @@ public class Camera {
 		this.Yaw = Yaw;
 		this.Roll = Roll;
 		FOV = Math.PI * 2 / 3;
-		TanHalfFOV = Math.tan(FOV/2);
+		TanHalfFOV = Math.tan(FOV / 2);
 	}
 
 	public void SetPosition(Vector3 Pos) {
@@ -49,7 +49,7 @@ public class Camera {
 
 	public void SetFOV(double FOV) {
 		this.FOV = FOV;
-		TanHalfFOV = Math.tan(FOV/2);
+		TanHalfFOV = Math.tan(FOV / 2);
 	}
 
 	public Vector3 GetPos() {
@@ -71,6 +71,7 @@ public class Camera {
 	public double GetFOV() {
 		return FOV;
 	}
+
 	public double GetTanHalfFOV() {
 		return TanHalfFOV;
 	}
